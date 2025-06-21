@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontak Kami</title>
+  <link href="/css/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-amber-50 text-gray-800">
+  <!-- Navbar -->
+  <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
+    <div class="flex items-center gap-2">
+      <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
+      <a href="/"><span
+          class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
+    </div>
+    <ul class="flex gap-6">
+      <li><a href="/menu"
+          class="font-semibold <%= currentPage === 'menu' ? 'text-amber-600' : 'hover:text-amber-600' %>">Menu</a></li>
+      <li><a href="/tentangKami"
+          class="font-semibold <%= currentPage === 'tentangKami' ? 'text-amber-600' : 'hover:text-amber-600' %>">Tentang
+          Kami</a></li>
+      <li><a href="/kontak"
+          class="font-semibold <%= currentPage === 'kontak' ? 'text-amber-600' : 'hover:text-amber-600' %>">Kontak</a>
+      </li>
+      <li><a href="/keranjang"
+          class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
+      </li>
+      <li class="relative group cursor-pointer">
+        <!-- Gambar profil -->
+        <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
+          class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
+
+        <!-- Dropdown menu -->
+        <ul id="dropdownMenu"
+          class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
+          <li>
+            <a href="/logout"
+              class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
+          </li>
+        </ul>
+
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="text-center py-16 bg-gradient-to-b from-yellow-50 via-amber-100">
+    <h1 class="text-3xl md:text-4xl font-bold mb-4">Hubungi Kami</h1>
+    <p class="text-gray-600 max-w-xl mx-auto">
+      Ada pertanyaan, saran, atau ingin melakukan pemesanan langsung? Hubungi kami melalui formulir di bawah ini atau
+      via kontak yang tersedia.
+    </p>
+  </section>
+
+  <!-- Gradasi transisi -->
+  <div class="bg-gradient-to-b from-yellow-50 via-amber-100 to-gray-100"></div>
+
+  <!-- Kontak Form -->
+  <section class="px-6 md:px-20 py-10 flex justify-center bg-white">
+
+    <!-- Kontak Info -->
+    <div class="bg-gray-100 p-6 rounded shadow w-full max-w-xl mx-auto text-center">
+      <!-- <div class="bg-gray-100 p-6 rounded shadow space-y-4 border border-gray-300 w-full md:w-[700px] mx-auto"> -->
+      <h2 class="text-xl font-semibold mb-6 text-center">Informasi Kontak</h2>
+
+      <div class="inline-block text-left space-y-2">
+        <p><span class="font-semibold">Alamat:</span> Perum De Sanctuary, Kota Bekasi, Jawa Barat</p>
+        <p><span class="font-semibold">Telepon:</span> 0813-9185-1201</p>
+        <p><span class="font-semibold">Email:</span> ariyanti.a76@gmail.com</p>
+        <p><span class="font-semibold">Jam:</span> Senin - Minggu: 08.00 - 18.00</p>
+      </div>
+
+      <div class="text-center mt-6">
+        <button
+          onclick="window.open('https://wa.me/6281395945958?text=Halo%20RA%20KITCHEN,%0ASaya%20ingin%20bertanya%20seputar%20produk.', '_blank')"
+          class="bg-amber-600 text-white px-4 py-2 rounded hover:bg-amber-700 transition">
+          Kirim Pesan via WhatsApp
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center py-8 bg-gradient-to-b from-yellow-100 via-amber-80 to-yellow-50">
+    <h2 class="text-lg font-semibold text-amber-700 mb-4">Services</h2>
+    <ul class="flex justify-center gap-6 text-sm text-gray-700 mb-4">
+      <li><a href="/" class="hover:text-amber-600 font-semibold">Home</a></li>
+      <li><a href="/menu" class="hover:text-amber-600 font-semibold">Menu</a></li>
+      <li><a href="/tentangKami" class="hover:text-amber-600 font-semibold">Tentang Kami</a></li>
+      <li><a href="/kontak" class="hover:text-amber-600 font-semibold">Kontak</a></li>
+    </ul>
+    <p class="text-xs text-gray-500">© <%= new Date().getFullYear() %> RA KITCHEN. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/client/profileLogout.js"></script>
+  <script src="/js/client/contactForm.js"></script>
+</body>
+
+</html>

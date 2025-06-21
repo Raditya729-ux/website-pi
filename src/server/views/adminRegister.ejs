@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register Admin</title>
+    <link rel="stylesheet" href="/css/output.css">
+</head>
+
+<body>
+    <h2>Register Admin</h2>
+    <% if (error) { %>
+        <p style="color: red;">
+            <%= error %>
+        </p>
+        <% } %>
+
+            <form method="POST" action="/admin/register">
+                <label>Email:</label><br>
+                <input type="email" name="email" required><br><br>
+
+                <label>Password:</label><br>
+                <input type="password" name="password" required><br><br>
+
+                <button type="submit">Register</button>
+            </form>
+
+            <p>Sudah punya akun? <a href="/admin/login">Login</a></p>
+</body>
+
+</html>

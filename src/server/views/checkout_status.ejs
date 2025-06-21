@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="/css/output.css" rel="stylesheet" />
+</head>
+
+<body class="text-gray-800 flex flex-col min-h-screen">
+  <section class="px-6 md:px-20 py-10 text-center">
+    <!-- <h2 class="text-2xl font-bold mb-4">Pesanan Anda</h2> -->
+    <section class="px-6 md:px-20 py-10 text-center">
+      <h2 class="text-2xl font-bold mb-4">Pesanan Anda</h2>
+      <!-- <p class="text-sm italic text-gray-500">Status dari controller: "<%= status %>"</p> Tambahan -->
+
+      <% if (status==='menunggu' ) { %>
+        <p class="text-yellow-600 font-semibold">
+          Silakan lakukan pembayaran dan unggah bukti transfer.
+        </p>
+        <% } else if (status==='verifikasi' ) { %>
+          <p class="text-orange-600 font-semibold">
+            Bukti transfer Anda telah diterima. Menunggu verifikasi admin.
+          </p>
+          <% } else if (status==='diproses' ) { %>
+            <p class="text-green-600 font-semibold">
+              Pesanan Anda sedang diproses. Tunggu informasi pengantaran.
+            </p>
+            <% } else if (status==='diantar' ) { %>
+              <p class="text-blue-600 font-semibold">
+                Pesanan sedang dalam pengantaran ke lokasi Anda.
+              </p>
+              <% } else if (status==='sampai' ) { %>
+                <p class="text-red-600 font-semibold">
+                  Pesanan sudah sampai.
+                </p>
+                <% } else { %>
+                  <p class="text-gray-600 font-semibold">
+                    Status pesanan tidak diketahui.
+                  </p>
+                  <% } %>
+
+    </section>
+
+
+    <!-- <% if (status==='menunggu' ) { %>
+      <p class="text-yellow-600 font-semibold">
+        Bukti pembayaran Anda telah dikirim dan sedang menunggu verifikasi admin.
+      </p>
+      <% } else if (status==='diproses' ) { %>
+        <p class="text-green-600 font-semibold">
+          Pesanan Anda sedang diproses dan akan segera diantar!
+        </p>
+        <% } else if (status==='diantar' ) { %>
+          <p class="text-blue-600 font-semibold">
+            Pesanan Anda telah dikirim ke alamat tujuan.
+          </p>
+          <% } else { %>
+            <p class="text-gray-600 font-semibold">Status pesanan tidak diketahui.</p>
+            <% } %> -->
+
+
+    <!-- <% if (status === 'menunggu') { %>
+  <p class="text-yellow-600 font-semibold">Bukti transfer sedang diverifikasi...</p>
+<% } else if (status === 'verifikasi') { %>
+  <p class="text-yellow-600 font-semibold">Bukti pembayaran Anda telah dikirim dan sedang menunggu verifikasi admin.</p>
+<% } else if (status === 'diproses') { %>
+  <p class="text-green-600 font-semibold">Pesanan Anda sedang diproses dan akan segera diantar!</p>
+<% } else if (status === 'selesai') { %>
+  <p class="text-blue-600 font-semibold">Pesanan Anda telah dikirim ke alamat tujuan.</p>
+<% } else { %>
+  <p class="text-gray-600 font-semibold">Status pesanan tidak diketahui.</p>
+<% } %> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      // Dengar event 'statusUpdated' dari server
+      socket.on('statusUpdated', (data) => {
+        // Reload otomatis kalau pesanan sesuai dengan user ini
+        if (data.userEmail === "<%= userEmail %>") {
+          location.reload(); // Atau bisa update DOM tanpa reload
+        }
+      });
+    </script>
+
+  </section>
+</body>
+
+</html>

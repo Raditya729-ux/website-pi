@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout Pembayaran</title>
+    <link href="/css/output.css" rel="stylesheet" />
+</head>
+
+<body class="bg-amber-50 text-gray-800 flex flex-col min-h-screen">
+    <section class="px-6 md:px-20 py-10">
+        <h2 class="text-2xl font-bold mb-4">Checkout Pembayaran</h2>
+
+        <div class="bg-white p-6 rounded shadow-md space-y-4">
+            <div class="text-lg">
+                <p>Total Harga: <strong>Rp <%= total?.toLocaleString() %></strong></p>
+                <p>Bayar Sekarang (DP 50%): <strong>Rp <%= dp?.toLocaleString() %></strong></p>
+                <p class="text-sm text-gray-600">
+                    * Sisa pembayaran sebesar Rp <%= sisa?.toLocaleString() %> dibayar saat pesanan sampai
+                </p>
+            </div>
+
+            <form action="/checkout/checkout_status" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" name="pesananId" value="<%= pesananId %>" />
+                <input type="hidden" name="total" value="<%= total %>" />
+                <input type="hidden" name="dp" value="<%= dp %>" />
+                <input type="hidden" name="sisa" value="<%= sisa %>" />
+
+                <div>
+                    <label class="block font-medium">Nama Lengkap</label>
+                    <input type="text" name="nama" value="<%= user.nama %>" readonly
+                        class="block w-full border border-gray-300 p-2 rounded bg-gray-100" />
+                </div>
+
+                <div>
+                    <label class="block font-medium">No. Telepon</label>
+                    <input type="text" name="telepon" value="<%= user.telepon %>" readonly
+                        class="block w-full border border-gray-300 p-2 rounded bg-gray-100" />
+                </div>
+
+                <div>
+                    <label class="block font-medium">Email</label>
+                    <input type="email" name="email" value="<%= user.email %>" readonly
+                        class="block w-full border border-gray-300 p-2 rounded bg-gray-100" />
+                </div>
+
+                <div>
+                    <label class="block font-medium">Alamat Lengkap</label>
+                    <textarea name="alamat" rows="3" readonly
+                        class="block w-full border border-gray-300 p-2 rounded bg-gray-100"><%= user.alamat %></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-medium">Upload Bukti Transfer (DP)</label>
+                    <input type="file" name="bukti" accept="image/*" required
+                        class="block w-full border border-gray-300 p-2 rounded" />
+                </div>
+
+                <button type="submit" class="bg-amber-600 text-white px-4 py-2 rounded">
+                    Kirim Bukti Pembayaran
+                </button>
+            </form>
+
+        </div>
+    </section>
+</body>
+
+</html>
+

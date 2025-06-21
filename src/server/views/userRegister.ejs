@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Akun - RA KITCHEN</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-white min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-md bg-gradient-to-b from-yellow-100 via-yellow-50 to-white p-8 rounded-2xl shadow-xl">
+
+        <img src="/images/logo.jpg" alt="RA Kitchen Logo"
+            class="w-20 h-20 mb-3 mx-auto rounded-xl shadow object-cover border-4 border-white" />
+
+        <!-- Judul -->
+        <h2 class="text-lg text-center font-bold mb-3">Silahkan Daftar!</h2>
+
+        <!-- Form -->
+        <form action="/userRegister" method="POST" class="space-y-3 text-left text-sm">
+            <div>
+                <label for="nama" class="block font-medium mb-1">Nama Lengkap</label>
+                <input type="text" name="nama" required placeholder="Masukkan nama anda..."
+                    class="w-full border border-yellow-300 px-3 py-1.5 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500">
+            </div>
+            <div>
+                <label for="email" class="block font-medium mb-1">Email</label>
+                <input type="email" name="email" required placeholder="Masukkan email anda..."
+                    class="w-full border border-yellow-300 px-3 py-1.5 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500">
+            </div>
+            <div>
+                <label for="telepon" class="block font-medium mb-1">Nomor Telepon</label>
+                <input type="text" name="telepon" required placeholder="Masukkan nomor telepon anda..."
+                    class="w-full border border-yellow-300 px-3 py-1.5 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500">
+            </div>
+            <div>
+                <label for="password" class="block font-medium mb-1">Kata Sandi</label>
+                <input type="password" name="password" required placeholder="Masukkan kata sandi..."
+                    class="w-full border border-yellow-300 px-3 py-1.5 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500">
+            </div>
+
+            <button type="submit"
+                class="w-full bg-amber-500 text-white py-2 mt-1 rounded-md hover:bg-amber-600 transition-all text-sm font-semibold">Daftar</button>
+        </form>
+
+        <!-- Link login -->
+        <p class="mt-3 text-sm text-center text-gray-600">
+            Sudah punya akun? <a href="/user/login" class="text-amber-600 underline">Masuk di sini</a>
+        </p>
+
+        <p class="mt-2 text-center text-sm text-gray-600">
+            Masuk sebagai <a href="/admin/login" target="_blank"
+                class="text-green-600 font-medium underline">Admin</a>
+        </p>
+        
+        <!-- <img src="/images/logo.jpg" alt="RA Kitchen Logo"
+            class="w-32 h-32 mb-4 mx-auto rounded-xl shadow-lg object-cover border-4 border-white" />
+
+        <h2 class="text-2xl font-bold text-center mb-6">Halo!</h2>
+
+        <% if (error) { %>
+            <p class="text-red-600 text-center mb-4">
+                <%= error %>
+            </p>
+            <% } %>
+
+                <form action="/userRegister" method="POST" class="space-y-4">
+                    <div>
+                        <label for="nama" class="block font-medium text-gray-800">Nama Lengkap</label>
+                        <input type="text" name="nama" required placeholder="Masukkan nama anda..."
+                            class="w-full border border-yellow-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block font-medium text-gray-800">Email</label>
+                        <input type="email" name="email" required placeholder="Masukkan email anda..."
+                            class="w-full border border-yellow-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label for="telepon" class="block font-medium text-gray-800">Nomor Telepon</label>
+                        <input type="text" name="telepon" required placeholder="Masukkan nomor telepon anda..."
+                            class="w-full border border-yellow-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <div>
+                        <label for="password" class="block font-medium text-gray-800">Kata Sandi</label>
+                        <input type="password" name="password" required placeholder="Masukkan minimal 8 huruf..."
+                            class="w-full border border-yellow-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-md transition">Daftar</button>
+                </form>
+
+                <p class="mt-4 text-center text-gray-700">
+                    Sudah punya akun? <a href="/user/login" class="text-amber-600 font-medium underline">Masuk di
+                        sini!</a>
+                </p> -->
+    </div>
+</body>
+
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Akun</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-xl">
+        <h2 class="text-2xl font-bold mb-4 text-center">Daftar Pengguna</h2>
+
+        <% if (error) { %>
+            <p class="text-red-600 text-center mb-4">
+                <%= error %>
+            </p>
+            <% } %>
+                <form action="/userRegister" method="POST" class="space-y-4">
+                    <div>
+                        <label for="nama" class="block font-semibold">Nama Lengkap</label>
+                        <input type="text" name="nama" required class="w-full border p-2 rounded-md">
+                    </div>
+                    <div>
+                        <label for="email" class="block font-semibold">Email</label>
+                        <input type="email" name="email" required class="w-full border p-2 rounded-md">
+                    </div>
+                    <div>
+                        <label for="telepon" class="block font-semibold">Nomor Telepon</label>
+                        <input type="text" name="telepon" required class="w-full border p-2 rounded-md">
+                    </div>
+                    <div>
+                        <label for="password" class="block font-semibold">Password</label>
+                        <input type="password" name="password" required class="w-full border p-2 rounded-md">
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Daftar</button>
+                </form>
+
+                <p class="mt-4 text-center">Sudah punya akun? <a href="/user/login"
+                        class="text-blue-600 underline">Login di
+                        sini</a></p>
+                <p class="mt-2 text-center">
+                    Atau daftar sebagai <a href="/admin/login" target="_blank"
+                        class="text-green-600 underline font-semibold">Admin</a>
+                </p>
+    </div>
+</body>
+
+</html> -->
