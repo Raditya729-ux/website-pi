@@ -17,23 +17,23 @@ router.get('/userRegister', showRegisterPage);
 router.post('/userRegister', registerUser);
 router.get('/user/login', showLoginUser);
 router.post('/user/login', loginUser);
-router.get('/logout', logoutUser);
+router.get('/logout', isUserLoggedIn, logoutUser);
 
 // Halaman Utama (harus login)
-router.get('/', isUserLoggedIn, showHomePage);
-router.get('/index', isUserLoggedIn, showHomePage);
+router.get('/', showHomePage);
+router.get('/index', showHomePage);
 
 // Halaman Navigasi (harus login)
-router.get('/menu', isUserLoggedIn, showMenuPage);
-router.get('/tentangKami', isUserLoggedIn, showTentangKamiPage);
-router.get('/kontak', isUserLoggedIn, showKontak);
+router.get('/menu', showMenuPage);
+router.get('/tentangKami', showTentangKamiPage);
+router.get('/kontak', showKontak);
 
 // Keranjang (harus login)
-router.get('/keranjang', isUserLoggedIn, showKeranjang);
-router.post('/keranjang/tambah', isUserLoggedIn, addToCart);
-router.post('/keranjang/tambah/:id', isUserLoggedIn, tambahJumlahItem);
-router.post('/keranjang/kurangi/:id', isUserLoggedIn, kurangiJumlahItem);
-router.post('/keranjang/hapus/:id', isUserLoggedIn, hapusDariKeranjang);
+router.get('/keranjang', showKeranjang);
+router.post('/keranjang/tambah', addToCart);
+router.post('/keranjang/tambah/:id', tambahJumlahItem);
+router.post('/keranjang/kurangi/:id', kurangiJumlahItem);
+router.post('/keranjang/hapus/:id', hapusDariKeranjang);
 
 // Checkout (harus login)
 router.get('/checkout', isUserLoggedIn, showCheckoutPage);

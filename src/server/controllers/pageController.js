@@ -7,11 +7,13 @@ import { sendInvoiceEmail } from '../utils/emailSender.js';
 
 // REGISTER USER
 export const showRegisterPage = (req, res) => {
-  res.render('userRegister', { error: null });
+  const referal = req.query.ref;
+  res.render('userRegister', { error: null, referal });
 };
 
 export const registerUser = (req, res) => {
   const { nama, email, telepon, password } = req.body;
+  const referal = req.query.ref;
 
   db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
     if (err) {
@@ -41,11 +43,13 @@ export const registerUser = (req, res) => {
 
 // TAMPILKAN HALAMAN LOGIN USER
 export const showLoginUser = (req, res) => {
-  res.render('userLogin', { error: null });
+  const referal = req.query.ref;
+  res.render('userLogin', { error: null, referal });
 };
 
 export const loginUser = (req, res) => {
   const { email, password } = req.body;
+  const referal = req.query.ref;
   db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
     if (err) {
       console.error('Error saat login:', err);
@@ -72,7 +76,7 @@ export const loginUser = (req, res) => {
       email: user.email,
       telepon: user.telepon
     };
-    res.redirect('/');
+    res.redirect(referal || '/');
   });
 };
 
@@ -80,7 +84,7 @@ export const loginUser = (req, res) => {
 export const logoutUser = (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('connect.sid');
-    res.redirect('/user/login');
+    res.redirect('/');
   });
 };
 
@@ -93,7 +97,8 @@ export const showHomePage = (req, res) => {
     }
     res.render('index', {
       currentPage: '/',
-      menuList: results
+      menuList: results,
+      isLoggedIn: req.session && req.session.isUser
     });
   });
 };
@@ -128,7 +133,7 @@ export const showKeranjang = (req, res) => {
   const cart = req.session.cart || [];
   const totalHarga = cart.reduce((total, item) => total + item.harga * item.jumlah, 0);
   const user = req.session.userData || {}; // tambahkan ini
-  res.render('keranjang', { currentPage: 'keranjang', cart, totalHarga, user });
+  res.render('keranjang', { currentPage: 'keranjang', isLoggedIn: req.session && req.session.isUser, cart, totalHarga, user });
 };
 
 export const addToCart = (req, res) => {

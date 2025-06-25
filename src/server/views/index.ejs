@@ -10,41 +10,7 @@
 
 <body class="bg-cream text-gray-800">
   <!-- Navbar -->
-  <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
-    <div class="flex items-center gap-2">
-      <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
-      <a href="/"><span
-          class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
-    </div>
-    <ul class="flex gap-6">
-      <li><a href="/menu"
-          class="font-semibold <%= currentPage === 'menu' ? 'text-amber-600' : 'hover:text-amber-600' %>">Menu</a></li>
-      <li><a href="/tentangKami"
-          class="font-semibold <%= currentPage === 'tentangKami' ? 'text-amber-600' : 'hover:text-amber-600' %>">Tentang
-          Kami</a></li>
-      <li><a href="/kontak"
-          class="font-semibold <%= currentPage === 'kontak' ? 'text-amber-600' : 'hover:text-amber-600' %>">Kontak</a>
-      </li>
-      <li><a href="/keranjang"
-          class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
-      </li>
-      <li class="relative group cursor-pointer">
-        <!-- Gambar profil -->
-        <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
-          class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
-
-        <!-- Dropdown menu -->
-        <ul id="dropdownMenu"
-          class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
-          <li>
-            <a href="/logout"
-              class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
-          </li>
-        </ul>
-
-      </li>
-    </ul>
-  </nav>
+  <%- include('components/header', {isLoggedIn}) %>
 
   <!-- Hero Section -->
   <section class="text-center py-16 bg-gradient-to-b from-yellow-50 via-amber-100">
