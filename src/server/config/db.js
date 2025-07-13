@@ -13,6 +13,7 @@ db.connect((err) => {
     return;
   }
   console.log('Connected to MySQL database!');
+  console.log('raditya bagas prabowo');
 });
 
 export default db;
