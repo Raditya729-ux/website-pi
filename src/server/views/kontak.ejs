@@ -12,7 +12,7 @@
   <!-- Navbar -->
   <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
     <div class="flex items-center gap-2">
-      <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
+      <!-- <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6"> -->
       <a href="/"><span
           class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
     </div>
@@ -28,12 +28,25 @@
       <li><a href="/keranjang"
           class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
       </li>
-      <li class="relative group cursor-pointer">
-        <!-- Gambar profil -->
+      <% if (userData) { %>
+        <li class="relative group cursor-pointer">
+          <!-- Gambar profil -->
+          <img id="profileBtn" src="/images/dummy_profile.jpg" alt="Profil"
+            class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
+
+          <!-- Dropdown menu -->
+          <ul id="dropdownMenu"
+            class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
+            <li>
+              <a href="/logout"
+                class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
+            </li>
+          </ul>
+        </li>
+        <% } %>
+          <!-- <li class="relative group cursor-pointer">
         <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
           class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
-
-        <!-- Dropdown menu -->
         <ul id="dropdownMenu"
           class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
           <li>
@@ -42,7 +55,7 @@
           </li>
         </ul>
 
-      </li>
+      </li> -->
     </ul>
   </nav>
 
@@ -69,7 +82,7 @@
       <div class="inline-block text-left space-y-2">
         <p><span class="font-semibold">Alamat:</span> Perum De Sanctuary, Kota Bekasi, Jawa Barat</p>
         <p><span class="font-semibold">Telepon:</span> 0813-9185-1201</p>
-        <p><span class="font-semibold">Email:</span> ariyanti.a76@gmail.com</p>
+        <p><span class="font-semibold">Email:</span> raditardi06@gmail.com</p>
         <p><span class="font-semibold">Jam:</span> Senin - Minggu: 08.00 - 18.00</p>
       </div>
 

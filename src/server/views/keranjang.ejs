@@ -13,7 +13,7 @@
   <!-- Navbar -->
   <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
     <div class="flex items-center gap-2">
-      <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
+      <!-- <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6"> -->
       <a href="/"><span
           class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
     </div>
@@ -29,21 +29,22 @@
       <li><a href="/keranjang"
           class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
       </li>
-      <li class="relative group cursor-pointer">
-        <!-- Gambar profil -->
-        <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
-          class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
+      <% if (isLoggedIn) { %>
+        <li class="relative group cursor-pointer">
+          <!-- Gambar profil -->
+          <img id="profileBtn" src="/images/dummy_profile.jpg" alt="Profil"
+            class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
 
-        <!-- Dropdown menu -->
-        <ul id="dropdownMenu"
-          class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
-          <li>
-            <a href="/logout"
-              class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
-          </li>
-        </ul>
-
-      </li>
+          <!-- Dropdown menu -->
+          <ul id="dropdownMenu"
+            class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
+            <li>
+              <a href="/logout"
+                class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
+            </li>
+          </ul>
+        </li>
+        <% } %>
     </ul>
   </nav>
 
@@ -64,29 +65,32 @@
       <% if (cart && cart.length> 0) { %>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Kolom Kiri: Daftar Item -->
-          <div class="space-y-6">
+          <!-- <div class="space-y-6"> -->
+          <!-- <div class="space-y-6 max-h-[600px] overflow-y-auto pr-2"> -->
+          <div class="max-h-[600px] overflow-y-auto space-y-6 pr-2">
             <% cart.forEach(item=> { %>
               <div class="flex items-center bg-gray-100 p-4 rounded shadow-md gap-4">
-                <img src="/uploads/<%= item.image || 'default.jpg' %>" alt="<%= item.nama %>"
+                <img src="/uploads/<%= item.image || 'default.jpg' %>" alt="<%= item.nama_menu %>"
                   class="w-20 h-20 object-cover rounded">
                 <div class="flex-1">
                   <h3 class="text-lg font-semibold">
-                    <%= item.nama %>
+                    <%= item.nama_menu %>
                   </h3>
-                  <p class="text-sm text-gray-600">Rp <%= item.harga.toLocaleString() %>
+                  <p class="text-sm text-gray-600">
+                    Rp <%= typeof item.harga_menu ==='number' ? item.harga_menu.toLocaleString() : '0' %>
                   </p>
                 </div>
                 <div class="flex items-center gap-2">
-                  <form action="/keranjang/kurangi/<%= item.id %>" method="POST">
+                  <form action="/keranjang/kurangi/<%= item.id_menu %>" method="POST">
                     <button class="px-2 bg-gray-200 rounded hover:bg-gray-300">−</button>
                   </form>
                   <span class="text-sm">
                     <%= item.jumlah %>
                   </span>
-                  <form action="/keranjang/tambah/<%= item.id %>" method="POST">
+                  <form action="/keranjang/tambah/<%= item.id_menu %>" method="POST">
                     <button class="px-2 bg-gray-200 rounded hover:bg-gray-300">+</button>
                   </form>
-                  <form action="/keranjang/hapus/<%= item.id %>" method="POST">
+                  <form action="/keranjang/hapus/<%= item.id_menu %>" method="POST">
                     <button class="text-red-500 hover:text-red-700 text-sm ml-2">Hapus</button>
                   </form>
                 </div>
@@ -95,7 +99,8 @@
           </div>
 
           <!-- Kolom Kanan: Form Checkout -->
-          <div class="bg-gray-100 p-6 rounded shadow-md flex flex-col justify-between h-full">
+          <!-- <div class="bg-gray-100 p-6 rounded shadow-md flex flex-col justify-between h-full"> -->
+          <div class="bg-gray-100 p-6 rounded shadow-md self-start">
             <form action="/checkout" method="POST" class="space-y-4 flex-grow">
               <div class="flex justify-between mb-4 text-lg font-semibold">
                 <span>Total:</span>
@@ -103,34 +108,57 @@
               </div>
               <div>
                 <label for="nama" class="block text-sm font-medium">Nama Lengkap</label>
-                <input type="text" id="nama" name="nama" placeholder="Isi nama anda ..." value="<%= user?.nama || '' %>"
-                  required class="w-full px-3 py-2 border border-gray-300 rounded" />
+                <input type="text" id="nama" name="nama" placeholder="Isi nama anda ..."
+                  value="<%= checkoutTemp.nama || user?.nama %>" required
+                  class="w-full px-3 py-2 border border-gray-300 rounded" />
               </div>
               <div>
                 <label for="telepon" class="block text-sm font-medium">Nomor Telepon</label>
                 <input type="text" id="telepon" name="telepon" placeholder="Isi nomor telepon anda ..."
-                  value="<%= user?.telepon || '' %>" required class="w-full px-3 py-2 border border-gray-300 rounded" />
+                  value="<%= checkoutTemp.telepon || user?.telepon %>" required
+                  class="w-full px-3 py-2 border border-gray-300 rounded" />
               </div>
               <div>
                 <label for="email" class="block text-sm font-medium">Email</label>
-                <input type="email" id="email" name="email" value="<%= user?.email || '' %>"
+                <input type="email" id="email" name="email" value="<%= checkoutTemp.email || user?.email %>"
                   placeholder="Isi email anda ..." required class="w-full px-3 py-2 border border-gray-300 rounded" />
               </div>
               <div>
                 <label for="alamat" class="block text-sm font-medium">Alamat Lengkap</label>
                 <textarea id="alamat" name="alamat" rows="3" placeholder="Isi alamat rumah anda ..." required
-                  class="w-full px-3 py-2 border border-gray-300 rounded"></textarea>
+                  class="w-full px-3 py-2 border border-gray-300 rounded"><%= checkoutTemp.alamat || '' %></textarea>
               </div>
-              <div class="pt-4">
+              <!-- <div class="pt-4">
                 <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700">
                   Lanjut ke Pembayaran
                 </button>
+              </div> -->
+              <div class="pt-4 justify-center items-center text-center">
+                <% if (isLoggedIn) { %>
+                  <button type="submit" class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700">
+                    Lanjut ke Pembayaran
+                  </button>
+                  <% } else { %>
+                    <div class="flex flex-col" style="margin-bottom: 1.5rem;">
+                      <a href="/user/login?ref=/keranjang"
+                        class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700">
+                        Login
+                      </a>
+                    </div>
+                    <div class="flex flex-col">
+                      <div className="text-sm text-gray-500" style="margin-bottom: 0.5rem;">Don't have an account?</div>
+                      <a href="/userRegister?ref=/keranjang"
+                        class="w-full bg-amber-600 text-white py-2 rounded hover:bg-amber-700">
+                        Register
+                      </a>
+                    </div>
+                    <% } %>
               </div>
             </form>
           </div>
         </div>
         <% } else { %>
-          <p class="text-center text-gray-500 font-semibold ">Keranjang Anda kosong.</p>
+          <p class="text-center text-gray-500 font-semibold">Keranjang anda kosong</p>
           <% } %>
     </section>
   </main>
@@ -147,7 +175,6 @@
   </footer>
 
   <script src="/js/client/profileLogout.js"></script>
-
 </body>
 
 </html>

@@ -13,7 +13,7 @@
 <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
   <!-- <nav class="flex justify-between items-center p-4 shadow bg-white"> -->
   <div class="flex items-center gap-2">
-    <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
+    <!-- <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6"> -->
     <a href="/"><span
         class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
   </div>
@@ -29,12 +29,25 @@
     <li><a href="/keranjang"
         class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
     </li>
-    <li class="relative group cursor-pointer">
-      <!-- Gambar profil -->
+    <% if (userData) { %>
+      <li class="relative group cursor-pointer">
+        <!-- Gambar profil -->
+        <img id="profileBtn" src="/images/dummy_profile.jpg" alt="Profil"
+          class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
+
+        <!-- Dropdown menu -->
+        <ul id="dropdownMenu"
+          class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
+          <li>
+            <a href="/logout"
+              class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
+          </li>
+        </ul>
+      </li>
+      <% } %>
+        <!-- <li class="relative group cursor-pointer">
       <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
         class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
-
-      <!-- Dropdown menu -->
       <ul id="dropdownMenu"
         class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
         <li>
@@ -43,7 +56,7 @@
         </li>
       </ul>
 
-    </li>
+    </li> -->
   </ul>
 </nav>
 
@@ -53,7 +66,7 @@
   <h1 class="text-3xl md:text-4xl font-bold mb-4">Tentang Kami</h1>
   <p class="text-gray-600 max-w-2xl mx-auto">
     Kami percaya makanan rumahan adalah bentuk cinta yang paling sederhana. Di dapur kami, setiap hidangan dibuat dengan
-    rasa hangat seperti buatan ibu sendiri.
+    rasa hangat dan cinta.
   </p>
 </section>
 
@@ -62,13 +75,12 @@
 
 <!-- Content -->
 <section class="px-6 md:px-20 py-10 grid md:grid-cols-2 items-center bg-white">
-  <img src="/images/logo.jpg" alt="Dapur kami"
-  class="w-48 h-auto mx-auto rounded-lg shadow" />
+  <img src="/images/logo.jpg" alt="Dapur kami" class="w-48 h-auto mx-auto rounded-lg shadow" />
   <!-- <img src="/images/logo.jpg" alt="Dapur kami" class="rounded-lg shadow-md"> -->
   <div class="text-left  md:pl-4">
     <h2 class="text-2xl font-semibold mb-3">Cita Rasa Asli, Dari Dapur Kami</h2>
     <p class="text-gray-700 mb-4">
-      Sejak 2024, kami menyajikan makanan khas rumahan dengan bahan-bahan segar dan resep keluarga. Kami berkomitmen
+      Sejak 2016, kami menyajikan makanan dengan bahan-bahan segar. Kami berkomitmen
       untuk memberikan rasa yang tak hanya lezat, tapi juga membawa kenangan.
     </p>
     <p class="text-gray-700">

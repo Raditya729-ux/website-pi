@@ -58,7 +58,7 @@ export const loginAdmin = (req, res) => {
 
   //  console.log('Email input:', email);
 
-  db.query('SELECT * FROM admins WHERE email = ?', [email], (err, results) => {
+  db.query('SELECT * FROM admins WHERE email_admin = ?', [email], (err, results) => {
     if (err) {
       console.error('Query error:', err);
       return res.render('adminLogin', { error: 'Terjadi kesalahan saat login' });
@@ -74,16 +74,25 @@ export const loginAdmin = (req, res) => {
 
     const admin = results[0];
 
-    (async () => {
-      const isMatch = await bcrypt.compare(password, admin.password);
+    const isMatch = password === admin.password_admin;
 
-      if (!isMatch) {
-        return res.render('adminLogin', { error: 'Password salah' });
-      }
+    if (!isMatch) {
+      return res.render('adminLogin', { error: 'Password salah' });
+    }
 
-      req.session.isAdmin = true;
-      res.redirect('/adminDashboard');
-    })();
+    req.session.isAdmin = true;
+    req.session.adminId = admin.id;
+    res.redirect('/adminDashboard');
+    // (async () => {
+    //   const isMatch = await bcrypt.compare(password, admin.password);
+
+    //   if (!isMatch) {
+    //     return res.render('adminLogin', { error: 'Password salah' });
+    //   }
+
+    //   req.session.isAdmin = true;
+    //   res.redirect('/adminDashboard');
+    // })();
   });
 };
 
@@ -96,25 +105,28 @@ export const logoutAdmin = (req, res) => {
 
 // TAMPILKAN HALAMAN TRANSAKSI
 export const showTransaksiPage = (req, res) => {
-  const transaksiQuery = `
+  const transaksiQuery = 
+ 
+  `
     SELECT 
-      p.id AS invoice_id,
+      p.id_pesanan AS invoice_id,
       p.nama AS pembeli,
       p.email,
       p.telepon,
       p.alamat,
       p.tanggal,
       bayar.status,
-      bayar.bukti_transfer,
-      m.nama AS nama_menu,
-      m.harga,
-      dp.qty
+      bayar.bukti_transfer_pembayaran,
+      m.nama_menu AS nama_menu,
+      m.harga_menu,
+      dp.kuantitas
     FROM pesanan p
-    JOIN pembayaran bayar ON p.id = bayar.pesanan_id
-    JOIN detail_pesanan dp ON p.id = dp.pesanan_id
-    JOIN menu m ON dp.menu_id = m.id
+    JOIN pembayaran bayar ON p.id_pesanan = bayar.pesanan_id
+    JOIN detail_pesanan dp ON p.id_pesanan = dp.pesanan_id
+    JOIN menu m ON dp.menu_id = m.id_menu
     ORDER BY p.tanggal DESC
-  `;
+  `
+  ;
 
   db.query(transaksiQuery, (err, results) => {
     if (err) return res.status(500).send('Gagal ambil transaksi');
@@ -131,7 +143,7 @@ export const showTransaksiPage = (req, res) => {
           alamat: row.alamat,
           tanggal: row.tanggal,
           status: row.status,
-          bukti: row.bukti_transfer,
+          bukti: row.bukti_transfer_pembayaran,
           menu: []
         };
       }
@@ -139,7 +151,7 @@ export const showTransaksiPage = (req, res) => {
       groupedTransaksi[row.invoice_id].menu.push({
         nama: row.nama_menu,
         harga: row.harga,
-        jumlah: row.qty
+        jumlah: row.kuantitas
       });
     });
 
@@ -163,7 +175,7 @@ export const showMenuPage = (req, res) => {
     let selectedMenu = null;
 
     if (editId) {
-      selectedMenu = menuResults.find(menu => menu.id == editId);
+      selectedMenu = menuResults.find(menu => menu.id_menu == editId);
     }
 
     res.render('adminDashboard', {
@@ -178,25 +190,29 @@ export const showMenuPage = (req, res) => {
 // DASHBOARD ADMIN
 export const showAdminPage = (req, res) => {
   const section = req.query.section || 'transaksi' || 'menu';
-  const transaksiQuery = `
-    SELECT 
-      p.id AS invoice_id,
-      p.nama AS pembeli,
-      p.email,
-      p.telepon,
-      p.alamat,
-      p.tanggal,
-      bayar.status,
-      bayar.bukti_transfer,
-      m.nama AS nama_menu,
-      m.harga,
-      dp.qty
-    FROM pesanan p
-    JOIN pembayaran bayar ON p.id = bayar.pesanan_id
-    JOIN detail_pesanan dp ON p.id = dp.pesanan_id
-    JOIN menu m ON dp.menu_id = m.id
-    ORDER BY p.tanggal DESC
-  `;
+  const transaksiQuery =
+    `
+      SELECT 
+        p.id_pesanan AS invoice_id,
+        p.nama AS pembeli,
+        p.email,
+        p.telepon,
+        p.alamat,
+        p.tanggal,
+        bayar.status,
+        bayar.bukti_transfer_pembayaran,
+        m.nama_menu AS nama_menu,
+        m.harga_menu,
+        dp.kuantitas
+      FROM pesanan p
+      JOIN pembayaran bayar ON p.id_pesanan = bayar.pesanan_id
+      JOIN detail_pesanan dp ON p.id_pesanan = dp.pesanan_id
+      JOIN menu m ON dp.menu_id = m.id_menu
+      ORDER BY p.tanggal DESC
+    `
+ 
+
+    ;
 
   db.query('SELECT * FROM menu WHERE is_deleted = 0', (err, menuResults) => {
     if (err) return res.status(500).send('Gagal ambil menu');
@@ -216,15 +232,15 @@ export const showAdminPage = (req, res) => {
             alamat: row.alamat,
             tanggal: row.tanggal,
             status: row.status,
-            bukti: row.bukti_transfer,
+            bukti: row.bukti_transfer_pembayaran,
             menu: []
           };
         }
 
         groupedTransaksi[row.invoice_id].menu.push({
           nama: row.nama_menu,
-          harga: row.harga,
-          jumlah: row.qty
+          harga_menu: row.harga_menu,
+          jumlah: row.kuantitas
         });
       });
 
@@ -233,7 +249,7 @@ export const showAdminPage = (req, res) => {
       const editId = req.query.edit;
       let selectedMenu = null;
       if (editId) {
-        selectedMenu = menuResults.find(menu => menu.id == editId);
+        selectedMenu = menuResults.find(menu => menu.id_menu == editId);
       }
 
       res.render('adminDashboard', {
@@ -250,12 +266,13 @@ export const showAdminPage = (req, res) => {
 export const uploadMenu = (req, res) => {
   const { nama, harga, deskripsi } = req.body;
   const image = req.file?.filename;
+  const adminId = req.session.adminId;
 
-  if (!nama || !harga || !deskripsi || isNaN(parseInt(harga))) {
+  if (!nama || !harga || !deskripsi|| isNaN(parseInt(harga))) {
     return res.status(400).send('Input tidak valid');
   }
 
-  db.query('INSERT INTO menu (nama, harga, deskripsi, image) VALUES (?, ?, ?, ?)', [nama, harga, deskripsi, image], (err) => {
+  db.query('INSERT INTO menu (nama_menu, harga_menu, deskripsi_menu, gambar_menu, created_by) VALUES (?, ?, ?, ?, ?)', [nama, harga, deskripsi, image, adminId], (err) => {
     if (err) {
       console.error('Gagal upload menu:', err);
       return res.status(500).send('Gagal upload menu');
@@ -273,18 +290,19 @@ export const getEditForm = (req, res) => {
 // EDIT MENU
 export const editMenu = (req, res) => {
   const { id } = req.params;
-  const { nama, harga, deskripsi } = req.body;
+  const { nama, harga, deskripsi} = req.body;
   const image = req.file ? req.file.filename : null;
+  const adminId = req.session.adminId;
 
-  let query = 'UPDATE menu SET nama = ?, harga = ?, deskripsi = ?';
-  let params = [nama, harga, deskripsi];
+  let query = 'UPDATE menu SET nama_menu = ?, harga_menu = ?, deskripsi_menu = ?, updated_by = ?';
+  let params = [nama, harga, deskripsi, adminId];
 
   if (image) {
-    query += ', image = ?';
+    query += ', gambar_menu = ?';
     params.push(image);
   }
 
-  query += ' WHERE id = ?';
+  query += ' WHERE id_menu = ?';
   params.push(id);
 
   db.query(query, params, (err) => {
@@ -299,7 +317,7 @@ export const editMenu = (req, res) => {
 // DELETE MENU (Soft Delete)
 export const deleteMenu = (req, res) => {
   const { id } = req.params;
-  const query = 'UPDATE menu SET is_deleted = 1 WHERE id = ?';
+  const query = 'UPDATE menu SET is_deleted = 1 WHERE id_menu = ?';
 
   db.query(query, [id], (err) => {
     if (err) {
@@ -315,7 +333,7 @@ export const getCheckoutStatusPage = (req, res) => {
 
   db.query(
     `SELECT bayar.status FROM pesanan p
-     JOIN pembayaran bayar ON p.id = bayar.pesanan_id
+     JOIN pembayaran bayar ON p.id_pesanan = bayar.pesanan_id
      WHERE p.email = ?
      ORDER BY p.tanggal DESC LIMIT 1`,
     [email],
@@ -332,41 +350,49 @@ export const getCheckoutStatusPage = (req, res) => {
 export const ubahStatus = (req, res) => {
   const pesananId = req.params.id;
   const toStatus = req.query.to;
+  const adminId = req.session.adminId;
 
   if (!['menunggu', 'diproses', 'diantar', 'sampai'].includes(toStatus)) {
     return res.status(400).send('Status tidak valid');
   }
 
   // Ambil email user berdasarkan pesananId
-  db.query(`SELECT email FROM pesanan WHERE id = ?`, [pesananId], (err, result) => {
-    if (err || result.length === 0) {
-      console.error('Gagal mengambil email untuk emit:', err || 'Data tidak ditemukan');
-      return res.status(500).send('Gagal mengambil data email');
-    }
-
-    const userEmail = result[0].email;
-
-    // Update status pembayaran setelah mendapatkan email
-    db.query(
-      'UPDATE pembayaran SET status = ? WHERE pesanan_id = ?',
-      [toStatus, pesananId],
-      (err) => {
-        if (err) {
-          console.error('Gagal update status :', err.message);
-          return res.status(500).send('Gagal update status');
-        }
-
-        // Emit event ke semua client setelah update sukses
-        req.io.emit('statusUpdated', {
-          pesananId,
-          newStatus: toStatus,
-          userEmail
-        });
-
-        res.redirect('/adminDashboard');
+  db.query(
+  //   `
+  //   SELECT u.email FROM pesanan p
+  //   JOIN users u ON p.user_id = u.id
+  //   WHERE p.id = ?
+  // `
+    `SELECT email FROM pesanan WHERE id_pesanan = ?`, 
+    [pesananId], (err, result) => {
+      if (err || result.length === 0) {
+        console.error('Gagal mengambil email untuk emit:', err || 'Data tidak ditemukan');
+        return res.status(500).send('Gagal mengambil data email');
       }
-    );
-  });
+
+      const userEmail = result[0].email;
+
+      // Update status pembayaran setelah mendapatkan email
+      db.query(
+        'UPDATE pembayaran SET status = ?, updated_by = ? WHERE pesanan_id = ?',
+        [toStatus, adminId, pesananId],
+        (err) => {
+          if (err) {
+            console.error('Gagal update status :', err.message);
+            return res.status(500).send('Gagal update status');
+          }
+
+          // Emit event ke semua client setelah update sukses
+          req.io.emit('statusUpdated', {
+            pesananId,
+            newStatus: toStatus,
+            userEmail
+          });
+
+          res.redirect('/adminDashboard');
+        }
+      );
+    });
 };
 
 

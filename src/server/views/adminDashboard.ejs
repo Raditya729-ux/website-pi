@@ -23,7 +23,7 @@
         </a>
         <a href="/adminDashboard?section=menu" class="block w-full text-left py-2 px-3 rounded transition duration-200
       <%= currentPage === 'menu' ? 'bg-amber-700 text-white font-semibold' : 'hover:bg-amber-700 hover:text-white' %>">
-          Menu
+          Makanan
         </a>
         <a href="/admin/logout"
           class="block w-full text-left py-2 px-3 rounded transition duration-200 hover:bg-red-600 hover:text-white">
@@ -48,14 +48,14 @@
               <table class="table-auto w-full border border-gray-200">
                 <thead>
                   <tr class="bg-yellow-100">
-                    <th class="px-4 py-2 text-left">#</th>
+                    <th class="px-4 py-2 text-left">No</th>
                     <th class="px-4 py-2 text-left">Kode Invoice</th>
                     <th class="px-4 py-2 text-left">Tanggal</th>
                     <th class="px-4 py-2 text-left">Pembeli</th>
                     <th class="px-4 py-2 text-left">Kontak</th>
                     <th class="px-4 py-2 text-left">Status</th>
                     <th class="px-4 py-2 text-left">Detail Menu</th>
-                    <th class="px-4 py-2 text-left">Bukti Transfer</th>
+                    <th class="px-4 py-2 text-left">Bukti Transfer DP</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -150,7 +150,7 @@
                           <ul class="list-disc pl-4">
                             <% trx.menu.forEach(item=> { %>
                               <li>
-                                <%= item.nama %> (x<%= item.jumlah %>) - Rp <%= item.harga.toLocaleString('id-ID') %>
+                                <%= item.nama %> (x<%= item.jumlah %>) - Rp <%= item.harga_menu.toLocaleString('id-ID') %>
                               </li>
                               <% }) %>
                           </ul>
@@ -229,20 +229,23 @@
                     <% menuList.forEach(menu=> { %>
                       <tr class="border-b">
                         <td class="px-4 py-2">
-                          <img src="/uploads/<%= menu.image %>" alt="menu" class="h-16 w-16 object-cover rounded" />
+                          <img src="/uploads/<%= menu.gambar_menu %>" alt="menu" class="h-16 w-16 object-cover rounded" />
                         </td>
                         <td class="px-4 py-2">
-                          <%= menu.nama %>
+                          <%= menu.nama_menu %>
                         </td>
-                        <td class="px-4 py-2">Rp <%= menu.harga %>
+                        <td class="px-4 py-2">Rp <%= menu.harga_menu %>
                         </td>
                         <td class="px-4 py-2 space-x-2">
                           <button type="button"
                             class="edit-button bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded"
-                            data-id="<%= menu.id %>" data-nama="<%= menu.nama %>" data-harga="<%= menu.harga %>"
+                            data-id="<%= menu.id_menu %>" data-nama="<%= menu.nama_menu %>" data-harga="<%= menu.harga_menu %>"
                             data-deskripsi="<%= menu.deskripsi %>">Edit</button>
-                          <a href="/adminDashboard/delete/<%= menu.id %>" onclick="return confirm('Yakin ingin hapus?')"
-                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Hapus</a>
+                          <button type="button"
+                            class="delete-button bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                            data-id="<%= menu.id_menu %>">Hapus</button>
+                          <!-- <a href="/adminDashboard/delete/<%= menu.id %>" onclick="return confirm('Yakin ingin hapus?')"
+                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">Hapus</a> -->
                         </td>
                       </tr>
                       <% }) %>
@@ -260,7 +263,7 @@
                   <form id="edit-form" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="edit-id" name="id" />
                     <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700">Nama</label>
+                      <label class="block text-sm font-medium text-gray-700">Nama Makanan</label>
                       <input type="text" id="edit-nama" name="nama"
                         class="mt-1 block w-full border border-gray-300 rounded-md p-2" required />
                     </div>
@@ -283,6 +286,30 @@
                   </form>
                 </div>
               </div>
+
+              <!-- Modal Hapus -->
+              <div id="delete-popup"
+                class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+                  <div class="mb-4 text-center">
+                    <h2 class="text-xl font-bold text-red-600">Konfirmasi Hapus</h2>
+                    <p class="text-gray-700 mt-2">Apakah Anda yakin ingin menghapus menu ini?</p>
+                  </div>
+                  <div class="flex justify-center space-x-4 mt-6">
+                    <form id="delete-form" method="GET">
+                      <button type="submit"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded">
+                        Hapus
+                      </button>
+                    </form>
+                    <button id="cancel-delete"
+                      class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              </div>
+
             </section>
             <% } %>
     </main>

@@ -21,6 +21,7 @@ const __dirname = dirname(__filename);
 app.set('views', path.join(__dirname, 'src/server/views'));
 app.set('view engine', 'ejs');
 
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'src/client/public')));
 app.use('/uploads', express.static(path.join(__dirname, 'src/client/public/uploads')));
@@ -33,12 +34,21 @@ app.use(session({
   secret: 'secretAdminKey',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 2, // 1 jam
+  }
 }));
+
+// Set userData global ke EJS
+app.use((req, res, next) => {
+  res.locals.userData = req.session.userData || null;
+  next();
+});
 
 app.use((req, res, next) => {
   req.io = io;
   next();
-}); 
+});
 
 app.use('/', publicRoute);
 app.use('/', adminRoute);

@@ -2,9 +2,9 @@ import mysql from 'mysql';
 
 const db = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: '', // default XAMPP kosong
-  database: 'pi_testing'
+  user: 'radit',
+  password: 'radit',
+  database: 'pi_testing_tiga'
 });
 
 db.connect((err) => {

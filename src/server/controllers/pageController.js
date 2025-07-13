@@ -1,3 +1,4 @@
+
 import path from 'path';
 import bcrypt from 'bcrypt';
 import db from '../config/db.js';
@@ -7,26 +8,30 @@ import { sendInvoiceEmail } from '../utils/emailSender.js';
 
 // REGISTER USER
 export const showRegisterPage = (req, res) => {
-  res.render('userRegister', { error: null });
+  const referal = req.query.ref; //REVISI DWIKI
+  res.render('userRegister', { error: null, referal }); //REVISI DWIKI
+
+  // res.render('userRegister', { error: null });
 };
 
 export const registerUser = (req, res) => {
   const { nama, email, telepon, password } = req.body;
+  const referal = req.query.ref; //REVISI DWIKI
 
-  db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+  db.query('SELECT * FROM users WHERE email_user= ?', [email], async (err, results) => {
     if (err) {
       console.error('Error saat mengecek email:', err);
-      return res.render('userRegister', { error: 'Terjadi kesalahan saat proses' });
+      return res.render('userRegister', { error: 'Terjadi kesalahan saat proses', referal });
     }
 
     if (results.length > 0) {
-      return res.render('userRegister', { error: 'Email sudah terdaftar' });
+      return res.render('userRegister', { error: 'Email sudah terdaftar', referal });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     db.query(
-      'INSERT INTO users (nama, email, telepon, password) VALUES (?, ?, ?, ?)',
+      'INSERT INTO users (nama_user, email_user, telepon_user, password_user) VALUES (?, ?, ?, ?)',
       [nama, email, telepon, hashedPassword],
       (err2, result) => {
         if (err2) {
@@ -41,38 +46,43 @@ export const registerUser = (req, res) => {
 
 // TAMPILKAN HALAMAN LOGIN USER
 export const showLoginUser = (req, res) => {
-  res.render('userLogin', { error: null });
+  const referal = req.query.ref; //REVISI DWIKI
+  res.render('userLogin', { error: null, referal });//REVISI DWIKI
+
+  // res.render('userLogin', { error: null });
 };
 
 export const loginUser = (req, res) => {
   const { email, password } = req.body;
-  db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
+  const referal = req.query.ref; //REVISI DWIKI
+  db.query('SELECT * FROM users WHERE email_user = ?', [email], async (err, results) => {
     if (err) {
       console.error('Error saat login:', err);
-      return res.render('userLogin', { error: 'Terjadi kesalahan' });
+      return res.render('userLogin', { error: 'Terjadi kesalahan', referal });
     }
     if (results.length === 0) {
-      return res.render('userLogin', { error: 'Email tidak ditemukan' });
+      return res.render('userLogin', { error: 'Email tidak ditemukan', referal });
     }
     const user = results[0];
 
     console.log('Password dari form:', password);
     console.log('Hash di database:', user.password);
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password_user);
 
     console.log('Hasil compare bcrypt:', isMatch);
     if (!isMatch) {
-      return res.render('userLogin', { error: 'Password salah' });
+      return res.render('userLogin', { error: 'Password salah', referal });
     }
     req.session.isUser = true;
     req.session.userData = {
-      id: user.id,
-      nama: user.nama,
-      email: user.email,
-      telepon: user.telepon
+      id_user: user.id_user,
+      nama_user: user.nama_user,
+      email_user: user.email_user,
+      telepon_user: user.telepon_user
     };
-    res.redirect('/');
+    res.redirect(referal || '/');//REVISI DWIKI
+    // res.redirect('/');
   });
 };
 
@@ -80,7 +90,8 @@ export const loginUser = (req, res) => {
 export const logoutUser = (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('connect.sid');
-    res.redirect('/user/login');
+    res.redirect('/');//REVISI DWIKI
+    // res.redirect('/user/login');
   });
 };
 
@@ -93,7 +104,8 @@ export const showHomePage = (req, res) => {
     }
     res.render('index', {
       currentPage: '/',
-      menuList: results
+      menuList: results,
+      isLoggedIn: req.session && req.session.isUser//REVISI DWIKI
     });
   });
 };
@@ -126,9 +138,18 @@ export const showKontak = (req, res) => {
 // KERANJANG
 export const showKeranjang = (req, res) => {
   const cart = req.session.cart || [];
-  const totalHarga = cart.reduce((total, item) => total + item.harga * item.jumlah, 0);
-  const user = req.session.userData || {}; // tambahkan ini
-  res.render('keranjang', { currentPage: 'keranjang', cart, totalHarga, user });
+  const totalHarga = cart.reduce((total, item) => total + item.harga_menu * item.jumlah, 0);
+  const user = req.session.userData || {};
+  const checkoutTemp = req.session.checkoutTemp || {
+    nama: user.nama_user || '',
+    email: user.email_user || '',
+    telepon: user.telepon_user || '',
+    alamat: ''
+  };
+
+  res.render('keranjang', { currentPage: 'keranjang', isLoggedIn: req.session && req.session.isUser, cart, totalHarga, user, checkoutTemp });//REVISI DWIKI
+
+  // res.render('keranjang', { currentPage: 'keranjang', cart, totalHarga, user });
 };
 
 export const addToCart = (req, res) => {
@@ -148,9 +169,9 @@ export const addToCart = (req, res) => {
     existing.jumlah += parsedJumlah;
   } else {
     cart.push({
-      id: parsedId,
-      nama,
-      harga: parseInt(harga),
+      id_menu: parsedId,
+      nama_menu: nama,
+      harga_menu: parseInt(harga),
       image,
       jumlah: parsedJumlah
     });
@@ -163,7 +184,7 @@ export const addToCart = (req, res) => {
 export const tambahJumlahItem = (req, res) => {
   const itemId = parseInt(req.params.id);
   const cart = req.session.cart || [];
-  const item = cart.find(item => item.id === itemId);
+  const item = cart.find(item => item.id_menu === itemId);
   if (item) {
     item.jumlah += 1;
   }
@@ -174,11 +195,11 @@ export const tambahJumlahItem = (req, res) => {
 export const kurangiJumlahItem = (req, res) => {
   const itemId = parseInt(req.params.id);
   let cart = req.session.cart || [];
-  const item = cart.find(item => item.id === itemId);
+  const item = cart.find(item => item.id_menu === itemId);
   if (item) {
     item.jumlah -= 1;
     if (item.jumlah <= 0) {
-      cart = cart.filter(i => i.id !== itemId);
+      cart = cart.filter(i => i.id_menu !== itemId);
     }
   }
   req.session.cart = cart;
@@ -196,20 +217,33 @@ export const hapusDariKeranjang = (req, res) => {
 // CHECKOUT
 export const checkout = async (req, res) => {
   const cart = req.session.cart || [];
-  const { nama, email, telepon } = req.session.userData;
-  const { alamat } = req.body;
+  const { nama, email, telepon, alamat } = req.body;
+  req.session.checkoutTemp = { nama, email, telepon, alamat };
 
-
+  const { id } = req.session.userData;
   if (cart.length === 0) return res.send('Keranjang kosong.');
 
-  const total = cart.reduce((total, item) => total + item.harga * item.jumlah, 0);
+  const total = cart.reduce((total, item) => total + item.harga_menu * item.jumlah, 0);
   const dp = Math.round(total * 0.5);
   const sisa = total - dp;
 
+  db.query(
+    `UPDATE users SET nama_user = ?, email_user = ?, telepon_user = ? WHERE id_user = ?`,
+    [nama, email, telepon, id],
+    (err) => {
+      if (err) {
+        console.error('Gagal update data user:', err.message);
+      }
+    }
+  );
+
+  // Update session userData biar sinkron
+  req.session.userData = { id, nama, email, telepon };
   req.session.user = { nama, email, telepon, alamat };
 
   db.query(
-    'INSERT INTO pesanan (tanggal, total, nama, email, telepon, alamat) VALUES (NOW(), ?, ?, ?, ?, ?)',
+
+    'INSERT INTO pesanan (tanggal, total_pesanan, nama, email, telepon, alamat) VALUES (NOW(), ?, ?, ?, ?, ?)',
     [total, nama, email, telepon, alamat],
     (err, result) => {
       if (err) {
@@ -219,11 +253,13 @@ export const checkout = async (req, res) => {
 
       const pesananId = result.insertId;
       const detailValues = cart.map(item => [
-        pesananId, item.id, item.harga, item.jumlah, item.harga * item.jumlah
+        pesananId, item.id_menu, item.harga_menu, item.jumlah, item.harga_menu * item.jumlah
       ]);
 
+      console.log('Detail values akan dimasukkan:', detailValues);
+
       db.query(
-        'INSERT INTO detail_pesanan (pesanan_id, menu_id, harga, qty, subtotal) VALUES ?',
+        'INSERT INTO detail_pesanan (pesanan_id, menu_id, harga_detail_pesanan, kuantitas, subtotal) VALUES ?',
         [detailValues],
         async (err2) => {
           if (err2) {
@@ -241,16 +277,16 @@ export const checkout = async (req, res) => {
                 return res.status(500).send('Gagal menyimpan data pembayaran.');
               }
 
-              try {
-                const filePath = path.join('src/client/public/uploads', `invoice_${pesananId}.pdf`);
-                await generateInvoicePDF({ nama, email, telepon, alamat, total, dp, sisa }, filePath);
-                await sendInvoiceEmail(email, filePath);
-              } catch (pdfEmailError) {
-                console.error('Gagal generate/kirim email invoice:', pdfEmailError.message);
-              }
+              // try {
+              //   const filePath = path.join('src/client/public/uploads', `invoice_${pesananId}.pdf`);
+              //   await generateInvoicePDF({ nama, email, telepon, alamat, total, dp, sisa }, filePath);
+              //   await sendInvoiceEmail(email, filePath);
+              // } catch (pdfEmailError) {
+              //   console.error('Gagal generate/kirim email invoice:', pdfEmailError.message);
+              // }
 
               req.session.checkoutData = { pesananId, total, dp, sisa };
-              req.session.cart = [];
+              // req.session.cart = [];
               res.redirect('/checkout');
             }
           );
@@ -284,7 +320,7 @@ export const getCheckoutStatusPage = (req, res) => {
 
   const sql = `
     SELECT bayar.status FROM pesanan p
-    JOIN pembayaran bayar ON p.id = bayar.pesanan_id
+    JOIN pembayaran bayar ON p.id_pesanan = bayar.pesanan_id
     WHERE p.email = ? AND bayar.status IS NOT NULL
     ORDER BY p.tanggal DESC
     LIMIT 1
@@ -310,27 +346,94 @@ export const getCheckoutStatusPage = (req, res) => {
   });
 };
 
-
-export const checkOutStatus = (req, res) => {
+export const checkOutStatus = async (req, res) => {
   const { pesananId } = req.body;
   const buktiPath = req.file ? `/buktiPembayaran/${req.file.filename}` : null;
+
   if (!buktiPath || !pesananId) {
     return res.status(400).send('Data tidak lengkap');
   }
+
   db.query(
-    `UPDATE pembayaran SET bukti_transfer = ?, status = 'verifikasi' WHERE pesanan_id = ?`,
+    `UPDATE pembayaran SET bukti_transfer_pembayaran = ?, status = 'verifikasi' WHERE pesanan_id = ?`,
     [buktiPath, pesananId],
-    (err) => {
+    async (err) => {
       if (err) {
         console.error('Gagal update pembayaran:', err.message);
         return res.status(500).send('Gagal memperbarui status pembayaran.');
       }
-      req.session.checkoutData = {
-        ...req.session.checkoutData,
-        status: 'verifikasi'
-      };
-      res.redirect('/checkout/checkout_status');
+
+      // ✅ Ambil data user & pesanan
+      db.query(
+        `SELECT p.nama, p.email, p.telepon, p.alamat, p.total_pesanan, b.jumlah_dp, b.sisa_bayar 
+         FROM pesanan p
+         JOIN pembayaran b ON p.id_pesanan = b.pesanan_id
+         WHERE p.id_pesanan = ?`,
+        [pesananId],
+        async (err2, results) => {
+          if (err2) {
+            console.error('Gagal mengambil data untuk invoice:', err2.message);
+            return res.status(500).send('Gagal mengambil data untuk invoice.');
+          }
+
+          if (results.length === 0) {
+            return res.status(404).send('Data pesanan tidak ditemukan.');
+          }
+
+          const { nama, email, telepon, alamat, total_pesanan, jumlah_dp, sisa_bayar } = results[0];
+          const filePath = path.join('src/client/public/uploads', `invoice_${pesananId}.pdf`);
+
+          try {
+            await generateInvoicePDF({
+              nama,
+              email,
+              telepon,
+              alamat,
+              total: total_pesanan,
+              dp: jumlah_dp,
+              sisa: sisa_bayar
+            }, filePath);
+
+            await sendInvoiceEmail(email, filePath);
+          } catch (pdfEmailError) {
+            console.error('Gagal membuat/kirim invoice:', pdfEmailError.message);
+          }
+
+          req.session.checkoutData = {
+            ...req.session.checkoutData,
+            status: 'verifikasi'
+          };
+
+          res.redirect('/checkout/checkout_status');
+        }
+      );
     }
   );
 };
+
+// export const checkOutStatus = (req, res) => {
+//   const { pesananId } = req.body;
+//   const buktiPath = req.file ? `/buktiPembayaran/${req.file.filename}` : null;
+//   if (!buktiPath || !pesananId) {
+//     return res.status(400).send('Data tidak lengkap');
+//   }
+//   db.query(
+//     `UPDATE pembayaran SET bukti_transfer_pembayaran = ?, status = 'verifikasi' WHERE pesanan_id = ?`,
+//     [buktiPath, pesananId],
+//     (err) => {
+//       if (err) {
+//         console.error('Gagal update pembayaran:', err.message);
+//         return res.status(500).send('Gagal memperbarui status pembayaran.');
+//       }
+//       req.session.checkoutData = {
+//         ...req.session.checkoutData,
+//         status: 'verifikasi'
+//       };
+//       res.redirect('/checkout/checkout_status');
+//     }
+//   );
+// };
+
+
+
 

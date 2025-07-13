@@ -25,7 +25,7 @@
   <nav class="flex justify-between items-center p-4 shadow bg-yellow-50">
     <!-- <nav class="flex justify-between items-center p-4 shadow bg-white"> -->
     <div class="flex items-center gap-2">
-      <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6">
+      <!-- <img src="/images/logo.jpg" alt="Logo" class="w-6 h-6"> -->
       <a href="/"><span
           class="font-semibold <%= currentPage === '/' ? 'text-amber-600' : 'hover:text-amber-600' %>">Home</span></a>
     </div>
@@ -41,12 +41,25 @@
       <li><a href="/keranjang"
           class="font-semibold <%= currentPage === 'keranjang' ? 'text-amber-600' : 'hover:text-amber-600' %>">Keranjang</a>
       </li>
-      <li class="relative group cursor-pointer">
-        <!-- Gambar profil -->
+      <% if (userData) { %>
+        <li class="relative group cursor-pointer">
+          <!-- Gambar profil -->
+          <img id="profileBtn" src="/images/dummy_profile.jpg" alt="Profil"
+            class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
+
+          <!-- Dropdown menu -->
+          <ul id="dropdownMenu"
+            class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
+            <li>
+              <a href="/logout"
+                class="block px-4 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md font-semibold">Logout</a>
+            </li>
+          </ul>
+        </li>
+        <% } %>
+          <!-- <li class="relative group cursor-pointer">
         <img id="profileBtn" src="/images/profile_dummy.jpg" alt="Profil"
           class="w-8 h-8 rounded-full border-2 border-amber-600 cursor-pointer" />
-
-        <!-- Dropdown menu -->
         <ul id="dropdownMenu"
           class="absolute right-0 mt-2 w-32 bg-white rounded-md shadow-lg hidden transition duration-300 z-10">
           <li>
@@ -55,7 +68,7 @@
           </li>
         </ul>
 
-      </li>
+      </li> -->
     </ul>
   </nav>
 
@@ -78,34 +91,35 @@
           <div
             class="bg-white rounded-2xl shadow-md hover:shadow-lg transition duration-300 flex flex-col items-center text-center p-4 group">
             <div class="w-full h-36 overflow-hidden rounded-lg mb-4 bg-gray-100">
-              <img src="/uploads/<%= item.image || 'default.jpg' %>" alt="<%= item.nama %>"
+              <img src="/uploads/<%= item.gambar_menu || 'default.jpg' %>" alt="<%= item.nama %>"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
 
             <h3 class="text-xl font-semibold text-amber-700 mb-2 text-left w-full">
-              <%= item.nama %>
+              <%= item.nama_menu %>
             </h3>
             <p class="text-sl font-semibold text-gray-700 mb-4 text-left w-full">
-              Rp <%= item.harga ? item.harga.toLocaleString() : 'Harga tidak tersedia' %>
+              Rp <%= item.harga_menu ? item.harga_menu.toLocaleString() : 'Harga tidak tersedia' %>
             </p>
 
             <div class="flex gap-2 w-full mt-2 items-start">
               <!-- Tombol Lihat Detail -->
               <button type="button"
-                onclick="openModal('<%= item.nama %>', '<%= item.harga %>', '/uploads/<%= item.image %>', '<%= item.deskripsi %>')"
+                onclick="openModal('<%= item.nama_menu %>', '<%= item.harga_menu %>', '/uploads/<%= item.gambar_menu %>', '<%= item.deskripsi_menu %>')"
                 class="w-1/2 bg-amber-200 text-amber-800 font-semibold text-xs px-3 py-2 rounded-lg hover:bg-amber-300 transition text-center self-start">
                 Lihat Detail
               </button>
 
               <!-- Form Tambah ke Keranjang -->
               <form action="/keranjang/tambah" method="POST" class="w-1/2 add-to-cart-form flex flex-col">
-                <input type="hidden" name="id" value="<%= item.id %>">
-                <input type="hidden" name="nama" value="<%= item.nama %>">
-                <input type="hidden" name="harga" value="<%= item.harga %>">
-                <input type="hidden" name="image" value="<%= item.image %>">
+                <input type="hidden" name="id" value="<%= item.id_menu %>">
+                <input type="hidden" name="nama" value="<%= item.nama_menu %>">
+                <input type="hidden" name="harga" value="<%= item.harga_menu %>">
+                <input type="hidden" name="image" value="<%= item.gambar_menu %>">
                 <input type="hidden" name="jumlah" value="1" class="jumlah-input">
 
                 <!-- Tombol Tambah ke Keranjang -->
+
                 <button type="button"
                   class="btn-add-cart w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-3 rounded-lg text-xs">
                   + Keranjang
@@ -122,7 +136,7 @@
                   </div>
                   <button type="submit"
                     class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-1 px-3 rounded-lg text-xs w-full">
-                    Checkout
+                    Tambah ke keranjang
                   </button>
                 </div>
               </form>

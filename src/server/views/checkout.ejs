@@ -10,7 +10,7 @@
 
 <body class="bg-amber-50 text-gray-800 flex flex-col min-h-screen">
     <section class="px-6 md:px-20 py-10">
-        <h2 class="text-2xl font-bold mb-4">Checkout Pembayaran</h2>
+        <h2 class="text-2xl font-bold mb-4 text-center">Checkout Pembayaran</h2>
 
         <div class="bg-white p-6 rounded shadow-md space-y-4">
             <div class="text-lg">
@@ -52,7 +52,8 @@
                 </div>
 
                 <div>
-                    <label class="block font-medium">Upload Bukti Transfer (DP)</label>
+                    <label class="block font-bold">Upload Bukti Transfer (DP)</label>
+                    <label class="block font-bold">Nomor Rekening : </label>
                     <input type="file" name="bukti" accept="image/*" required
                         class="block w-full border border-gray-300 p-2 rounded" />
                 </div>
@@ -60,6 +61,10 @@
                 <button type="submit" class="bg-amber-600 text-white px-4 py-2 rounded">
                     Kirim Bukti Pembayaran
                 </button>
+                <a href="/keranjang" class="bg-red-600 text-white px-4 py-2 rounded">
+                    Kembali untuk koreksi pesanan
+                    dan data diri
+                </a>
             </form>
 
         </div>
@@ -67,4 +72,3 @@
 </body>
 
 </html>
-
